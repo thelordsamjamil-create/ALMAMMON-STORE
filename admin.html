@@ -1,0 +1,2831 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة المخزون الطبي - مركز المامون</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a5f7a;
+            --secondary-color: #57c5b6;
+            --accent-color: #159895;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --info-color: #17a2b8;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 15px 0;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo span {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+        }
+
+        .user-info i {
+            font-size: 1.2rem;
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-bottom: 1px solid #dee2e6;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+        }
+
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background-color: #f0f8ff;
+        }
+
+        .tab i {
+            margin-left: 8px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 25px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(87, 197, 182, 0.25);
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #144d63;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #45a99e;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Table Styles */
+        .table-responsive {
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .table th {
+            background-color: #f1f5f9;
+            padding: 12px 15px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--dark-color);
+            border-bottom: 2px solid #dee2e6;
+            position: sticky;
+            top: 0;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .table tbody tr.selected {
+            background-color: #e7f5ff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-low {
+            background-color: #ffeaea;
+            color: #d63031;
+        }
+
+        .status-ok {
+            background-color: #e8f7ef;
+            color: #00b894;
+        }
+
+        .status-warning {
+            background-color: #fff8e1;
+            color: #f39c12;
+        }
+
+        /* File Upload Area */
+        .file-upload-area {
+            border: 2px dashed #ced4da;
+            border-radius: var(--border-radius);
+            padding: 40px 20px;
+            text-align: center;
+            transition: var(--transition);
+            margin-bottom: 20px;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--secondary-color);
+            background-color: #f8f9fa;
+        }
+
+        .file-upload-area i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+        }
+
+        .file-upload-area h4 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .file-upload-area p {
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .filter-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+
+        .filter-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        /* Charts */
+        .chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1050;
+            overflow-y: auto;
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-dialog {
+            max-width: 800px;
+            margin: 30px auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h5 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #dee2e6;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6c757d;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close:hover {
+            color: var(--danger-color);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .developer-info {
+            text-align: right;
+        }
+
+        .developer-info h4 {
+            margin-bottom: 5px;
+            color: var(--secondary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+            }
+            
+            .filter-item {
+                min-width: 100%;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .developer-info {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tab {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            
+            .btn-group {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            header, .tabs, .filter-section, .btn, .modal, footer {
+                display: none !important;
+            }
+            
+            .tab-content {
+                display: block !important;
+                padding: 0;
+            }
+            
+            .card {
+                box-shadow: none;
+                border: 1px solid #dee2e6;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            body {
+                font-size: 12px;
+            }
+            
+            .table th, .table td {
+                padding: 6px 8px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-clinic-medical"></i>
+                <div>
+                    <h1>نظام إدارة المخزون الطبي</h1>
+                    <span>مركز المامون الطبي التشخيصي</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <i class="fas fa-user-md"></i>
+                <span>مراقب المخازن</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="tabs">
+        <div class="tab active" data-tab="upload">
+            <i class="fas fa-cloud-upload-alt"></i>
+            رفع وتحليل الملفات
+        </div>
+        <div class="tab" data-tab="reports">
+            <i class="fas fa-chart-bar"></i>
+            التقارير والتحليل
+        </div>
+        <div class="tab" data-tab="inventory">
+            <i class="fas fa-boxes"></i>
+            إدارة المخزون
+        </div>
+        <div class="tab" data-tab="orders">
+            <i class="fas fa-shopping-cart"></i>
+            طلبات الشراء
+        </div>
+        <div class="tab" data-tab="settings">
+            <i class="fas fa-cog"></i>
+            الإعدادات
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Upload Tab -->
+        <div id="upload" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-file-upload"></i> رفع وتحليل ملفات البيانات</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" id="analyzeAllBtn">
+                            <i class="fas fa-search"></i> تحليل جميع البيانات
+                        </button>
+                        <button class="btn btn-danger" id="resetDataBtn">
+                            <i class="fas fa-trash-alt"></i> إعادة تعيين البيانات
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        قم برفع ملفات Excel لتحليلها ودمجها مع قاعدة البيانات. يمكنك رفع ملفات طلبات الشراء وملفات الوارد.
+                    </div>
+                    
+                    <div class="file-upload-area" id="dropArea">
+                        <i class="fas fa-file-excel"></i>
+                        <h4>اسحب وأفلت ملفات Excel هنا</h4>
+                        <p>أو انقر لاختيار الملفات يدوياً</p>
+                        <input type="file" id="fileInput" multiple accept=".xlsx, .xls" style="display: none;">
+                        <button class="btn btn-secondary" id="browseBtn">
+                            <i class="fas fa-folder-open"></i> تصفح الملفات
+                        </button>
+                    </div>
+                    
+                    <div id="uploadProgress" style="display: none;">
+                        <div class="form-group">
+                            <label>تحميل الملفات...</label>
+                            <div style="background-color: #e9ecef; border-radius: var(--border-radius); height: 20px; overflow: hidden;">
+                                <div id="progressBar" style="height: 100%; width: 0%; background-color: var(--secondary-color); transition: width 0.3s;"></div>
+                            </div>
+                            <div id="progressText" style="text-align: center; margin-top: 5px;"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="uploadedFiles" class="table-responsive">
+                        <h4 style="margin-bottom: 15px;">الملفات المرفوعة</h4>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>اسم الملف</th>
+                                    <th>النوع</th>
+                                    <th>الحجم</th>
+                                    <th>التاريخ</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="filesTableBody">
+                                <!-- Files will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="analysisResults" style="display: none;">
+                        <h4 style="margin-bottom: 15px; color: var(--primary-color);">
+                            <i class="fas fa-chart-line"></i> نتائج تحليل البيانات
+                        </h4>
+                        <div class="row" style="display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px;">
+                            <div class="card" style="flex: 1; min-width: 250px;">
+                                <div class="card-body">
+                                    <h5 style="color: var(--primary-color); margin-bottom: 10px;">ملخص البيانات</h5>
+                                    <div id="dataSummary">
+                                        <!-- Data summary will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" style="flex: 1; min-width: 250px;">
+                                <div class="card-body">
+                                    <h5 style="color: var(--primary-color); margin-bottom: 10px;">إحصائيات سريعة</h5>
+                                    <div id="quickStats">
+                                        <!-- Quick stats will be added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Tab -->
+        <div id="reports" class="tab-content">
+            <div class="filter-section">
+                <div class="filter-row">
+                    <div class="filter-item">
+                        <label>نوع التقرير</label>
+                        <select id="reportType" class="form-control">
+                            <option value="inventory">تقرير المخزون</option>
+                            <option value="purchase">تقرير طلبات الشراء</option>
+                            <option value="arrivals">تقرير الوارد</option>
+                            <option value="analysis">تحليل البيانات</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>فرز حسب</label>
+                        <select id="sortBy" class="form-control">
+                            <option value="itemCode">رقم الصنف</option>
+                            <option value="itemName">اسم الصنف</option>
+                            <option value="balance">الرصيد</option>
+                            <option value="minLevel">الحد الأدنى</option>
+                            <option value="required">الكمية المطلوبة</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <label>حالة المخزون</label>
+                        <select id="inventoryStatus" class="form-control">
+                            <option value="all">الكل</option>
+                            <option value="low">أقل من الحد الأدنى</option>
+                            <option value="ok">أعلى من الحد الأدنى</option>
+                            <option value="zero">رصيد صفر</option>
+                        </select>
+                    </div>
+                    <div class="filter-item">
+                        <button class="btn btn-primary" id="generateReportBtn">
+                            <i class="fas fa-chart-bar"></i> إنشاء التقرير
+                        </button>
+                        <button class="btn btn-success" id="printReportBtn">
+                            <i class="fas fa-print"></i> طباعة التقرير
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="filter-row" style="margin-top: 15px;">
+                    <div class="filter-item">
+                        <label>البحث</label>
+                        <input type="text" id="searchInput" class="form-control" placeholder="ابحث في البيانات...">
+                    </div>
+                    <div class="filter-item">
+                        <label>عرض الأعمدة</label>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="columnToggle">
+                            <!-- Column toggles will be added here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-file-alt"></i> التقرير</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary" id="exportExcelBtn">
+                            <i class="fas fa-file-excel"></i> تصدير إلى Excel
+                        </button>
+                        <button class="btn btn-warning" id="refreshReportBtn">
+                            <i class="fas fa-sync-alt"></i> تحديث
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="reportContent">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            قم بتحديد معايير التقرير ثم انقر على "إنشاء التقرير" لعرض البيانات.
+                        </div>
+                    </div>
+                    
+                    <div id="chartsSection" style="margin-top: 30px; display: none;">
+                        <h4 style="margin-bottom: 20px; color: var(--primary-color);">
+                            <i class="fas fa-chart-pie"></i> الرسومات البيانية
+                        </h4>
+                        <div class="row" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                            <div class="card" style="flex: 1; min-width: 300px;">
+                                <div class="card-header">
+                                    <h5>توزيع حالة المخزون</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="inventoryChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card" style="flex: 1; min-width: 300px;">
+                                <div class="card-header">
+                                    <h5>أعلى 10 أصناف مطلوبة</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="requiredItemsChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Tab -->
+        <div id="inventory" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-box-open"></i> إدارة المخزون</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-success" id="addInventoryBtn">
+                            <i class="fas fa-plus"></i> إضافة صنف جديد
+                        </button>
+                        <button class="btn btn-primary" id="updateMinLevelsBtn">
+                            <i class="fas fa-edit"></i> تحديث الحد الأدنى
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>تنبيه:</strong> هناك <span id="lowStockCount">0</span> أصناف أقل من الحد الأدنى للمخزون.
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table" id="inventoryTable">
+                            <thead>
+                                <tr>
+                                    <th>رقم الصنف</th>
+                                    <th>اسم الصنف</th>
+                                    <th>الوحدة</th>
+                                    <th>الرصيد</th>
+                                    <th>الحد الأدنى</th>
+                                    <th>الكمية المطلوبة</th>
+                                    <th>رقم الطلب</th>
+                                    <th>الكمية الواردة</th>
+                                    <th>مرتجع توريد</th>
+                                    <th>المتبقي من الطلب</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventoryTableBody">
+                                <!-- Inventory data will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Tab -->
+        <div id="orders" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-clipboard-list"></i> طلبات الشراء</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-success" id="addOrderBtn">
+                            <i class="fas fa-plus"></i> إضافة طلب جديد
+                        </button>
+                        <button class="btn btn-primary" id="linkOrdersBtn">
+                            <i class="fas fa-link"></i> ربط الطلبات بالحد الأدنى
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        يتم ربط طلبات الشراء تلقائياً مع الحد الأدنى للمخزون. عند إدخال الكمية الواردة، يتم خصمها من الكمية المطلوبة.
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table class="table" id="ordersTable">
+                            <thead>
+                                <tr>
+                                    <th>رقم الطلب</th>
+                                    <th>رقم الصنف</th>
+                                    <th>اسم الصنف</th>
+                                    <th>الكمية المطلوبة</th>
+                                    <th>الكمية الواردة</th>
+                                    <th>مرتجع توريد</th>
+                                    <th>المتبقي من الطلب</th>
+                                    <th>تاريخ الطلب</th>
+                                    <th>الحالة</th>
+                                    <th>الإجراءات</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <!-- Orders data will be added here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-cogs"></i> إعدادات النظام</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                        <div class="card" style="flex: 1; min-width: 300px;">
+                            <div class="card-header">
+                                <h5>إعدادات عامة</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>اسم المركز</label>
+                                    <input type="text" class="form-control" value="مركز المامون الطبي التشخيصي" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label>تحديث تلقائي للبيانات</label>
+                                    <select class="form-control" id="autoUpdate">
+                                        <option value="1">مفعل</option>
+                                        <option value="0">معطل</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>عدد العناصر المعروضة في الصفحة</label>
+                                    <input type="number" class="form-control" id="itemsPerPage" value="20" min="5" max="100">
+                                </div>
+                                <button class="btn btn-primary" id="saveGeneralSettings">
+                                    <i class="fas fa-save"></i> حفظ الإعدادات
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="card" style="flex: 1; min-width: 300px;">
+                            <div class="card-header">
+                                <h5>إدارة البيانات</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>نسخ احتياطي للبيانات</label>
+                                    <button class="btn btn-secondary" id="backupDataBtn" style="width: 100%;">
+                                        <i class="fas fa-download"></i> إنشاء نسخة احتياطية
+                                    </button>
+                                </div>
+                                <div class="form-group">
+                                    <label>استعادة بيانات</label>
+                                    <input type="file" class="form-control" id="restoreFile" accept=".json">
+                                </div>
+                                <div class="form-group">
+                                    <label>إعادة تعيين النظام</label>
+                                    <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <strong>تحذير:</strong> هذه العملية ستحذف جميع البيانات ولا يمكن التراجع عنها.
+                                    </div>
+                                    <button class="btn btn-danger" id="resetSystemBtn" style="width: 100%;">
+                                        <i class="fas fa-trash-alt"></i> إعادة تعيين النظام بالكامل
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card" style="margin-top: 20px;">
+                        <div class="card-header">
+                            <h5>معلومات المطور</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row" style="display: flex; align-items: center; gap: 20px;">
+                                <div style="flex: 1;">
+                                    <h4 style="color: var(--primary-color); margin-bottom: 10px;">سام جميل القدسي</h4>
+                                    <p><i class="fas fa-phone"></i> 774432141</p>
+                                    <p><i class="fas fa-envelope"></i> thelordsamjamil@gmail.com</p>
+                                    <p><i class="fas fa-code"></i> نظام إدارة المخزون الطبي المتكامل</p>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="width: 120px; height: 120px; background-color: var(--secondary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                        <i class="fas fa-user-tie" style="font-size: 3rem; color: white;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div>
+                <p>© 2023 نظام إدارة المخزون الطبي - مركز المامون الطبي التشخيصي</p>
+                <p>جميع الحقوق محفوظة</p>
+            </div>
+            <div class="developer-info">
+                <h4>مطور النظام</h4>
+                <p>سام جميل القدسي</p>
+                <p>774432141 | thelordsamjamil@gmail.com</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Add Inventory Item Modal -->
+    <div class="modal" id="addInventoryModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5><i class="fas fa-plus"></i> إضافة صنف جديد للمخزون</h5>
+                    <button class="close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="addInventoryForm">
+                        <div class="form-group">
+                            <label>رقم الصنف</label>
+                            <input type="text" class="form-control" id="newItemCode" required>
+                        </div>
+                        <div class="form-group">
+                            <label>اسم الصنف</label>
+                            <input type="text" class="form-control" id="newItemName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الوحدة</label>
+                            <select class="form-control" id="newItemUnit" required>
+                                <option value="">اختر الوحدة</option>
+                                <option value="كيت">كيت</option>
+                                <option value="علبة">علبة</option>
+                                <option value="باكت">باكت</option>
+                                <option value="قطعه">قطعه</option>
+                                <option value="بدلة">بدلة</option>
+                                <option value="شدة">شدة</option>
+                                <option value="فيالة">فيالة</option>
+                                <option value="دبه">دبه</option>
+                                <option value="لتر">لتر</option>
+                            </select>
+                        </div>
+                        <div class="row" style="display: flex; gap: 15px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>الرصيد الحالي</label>
+                                <input type="number" class="form-control" id="newItemBalance" value="0" min="0" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>الحد الأدنى</label>
+                                <input type="number" class="form-control" id="newItemMinLevel" value="1" min="0" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary close">إلغاء</button>
+                    <button class="btn btn-success" id="saveInventoryItem">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Inventory Item Modal -->
+    <div class="modal" id="editInventoryModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5><i class="fas fa-edit"></i> تعديل بيانات الصنف</h5>
+                    <button class="close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="editInventoryForm">
+                        <div class="form-group">
+                            <label>رقم الصنف</label>
+                            <input type="text" class="form-control" id="editItemCode" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>اسم الصنف</label>
+                            <input type="text" class="form-control" id="editItemName" required>
+                        </div>
+                        <div class="row" style="display: flex; gap: 15px;">
+                            <div class="form-group" style="flex: 1;">
+                                <label>الرصيد الحالي</label>
+                                <input type="number" class="form-control" id="editItemBalance" min="0" required>
+                            </div>
+                            <div class="form-group" style="flex: 1;">
+                                <label>الحد الأدنى</label>
+                                <input type="number" class="form-control" id="editItemMinLevel" min="0" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>الكمية المطلوبة</label>
+                            <input type="number" class="form-control" id="editItemRequired" min="0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary close">إلغاء</button>
+                    <button class="btn btn-success" id="updateInventoryItem">تحديث</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Order Modal -->
+    <div class="modal" id="addOrderModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5><i class="fas fa-cart-plus"></i> إضافة طلب شراء جديد</h5>
+                    <button class="close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="addOrderForm">
+                        <div class="form-group">
+                            <label>رقم الطلب</label>
+                            <input type="text" class="form-control" id="newOrderNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الصنف</label>
+                            <select class="form-control" id="newOrderItemCode" required>
+                                <option value="">اختر رقم الصنف</option>
+                                <!-- Options will be populated from inventory -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>اسم الصنف</label>
+                            <input type="text" class="form-control" id="newOrderItemName" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>الكمية المطلوبة</label>
+                            <input type="number" class="form-control" id="newOrderQuantity" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>تاريخ الطلب</label>
+                            <input type="date" class="form-control" id="newOrderDate" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary close">إلغاء</button>
+                    <button class="btn btn-success" id="saveOrderItem">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // بيانات النظام
+        let systemData = {
+            inventory: [],
+            purchaseOrders: [],
+            arrivals: [],
+            files: [],
+            settings: {
+                autoUpdate: true,
+                itemsPerPage: 20
+            }
+        };
+
+        // تهيئة النظام
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            setupEventListeners();
+            loadSampleData();
+            updateInventoryTable();
+            updateOrdersTable();
+        });
+
+        // تهيئة النظام
+        function initializeSystem() {
+            // تحميل البيانات من localStorage إذا كانت موجودة
+            const savedData = localStorage.getItem('medicalInventorySystem');
+            if (savedData) {
+                try {
+                    systemData = JSON.parse(savedData);
+                    showAlert('تم تحميل البيانات المحفوظة بنجاح', 'success');
+                } catch (e) {
+                    console.error('خطأ في تحميل البيانات:', e);
+                    showAlert('خطأ في تحميل البيانات المحفوظة، سيتم استخدام البيانات الافتراضية', 'danger');
+                }
+            }
+            
+            // تحديث واجهة المستخدم
+            updateUI();
+        }
+
+        // إعداد مستمعي الأحداث
+        function setupEventListeners() {
+            // التبويبات
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+
+            // رفع الملفات
+            document.getElementById('browseBtn').addEventListener('click', function() {
+                document.getElementById('fileInput').click();
+            });
+
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+            
+            // سحب وإفلات الملفات
+            const dropArea = document.getElementById('dropArea');
+            dropArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.style.borderColor = 'var(--secondary-color)';
+                this.style.backgroundColor = '#f0f8ff';
+            });
+            
+            dropArea.addEventListener('dragleave', function() {
+                this.style.borderColor = '#ced4da';
+                this.style.backgroundColor = '';
+            });
+            
+            dropArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.style.borderColor = '#ced4da';
+                this.style.backgroundColor = '';
+                
+                const files = e.dataTransfer.files;
+                handleFiles(files);
+            });
+
+            // تحليل البيانات
+            document.getElementById('analyzeAllBtn').addEventListener('click', analyzeAllData);
+            document.getElementById('resetDataBtn').addEventListener('click', resetSystemData);
+
+            // التقارير
+            document.getElementById('generateReportBtn').addEventListener('click', generateReport);
+            document.getElementById('printReportBtn').addEventListener('click', printReport);
+            document.getElementById('exportExcelBtn').addEventListener('click', exportToExcel);
+            document.getElementById('refreshReportBtn').addEventListener('click', refreshReport);
+            document.getElementById('searchInput').addEventListener('input', filterReportData);
+
+            // المخزون
+            document.getElementById('addInventoryBtn').addEventListener('click', showAddInventoryModal);
+            document.getElementById('updateMinLevelsBtn').addEventListener('click', updateMinLevels);
+            document.getElementById('saveInventoryItem').addEventListener('click', saveInventoryItem);
+            document.getElementById('updateInventoryItem').addEventListener('click', updateInventoryItem);
+
+            // الطلبات
+            document.getElementById('addOrderBtn').addEventListener('click', showAddOrderModal);
+            document.getElementById('linkOrdersBtn').addEventListener('click', linkOrdersToMinLevel);
+            document.getElementById('saveOrderItem').addEventListener('click', saveOrderItem);
+            document.getElementById('newOrderItemCode').addEventListener('change', updateOrderItemName);
+
+            // الإعدادات
+            document.getElementById('saveGeneralSettings').addEventListener('click', saveGeneralSettings);
+            document.getElementById('backupDataBtn').addEventListener('click', backupData);
+            document.getElementById('resetSystemBtn').addEventListener('click', resetSystem);
+
+            // إغلاق النوافذ المنبثقة
+            document.querySelectorAll('.close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', function() {
+                    this.closest('.modal').classList.remove('show');
+                });
+            });
+
+            // إغلاق النوافذ المنبثقة بالنقر خارجها
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.classList.remove('show');
+                    }
+                });
+            });
+        }
+
+        // تحميل بيانات نموذجية
+        function loadSampleData() {
+            if (systemData.inventory.length === 0) {
+                // تحميل بيانات الحد الأدنى من الملف المرفق
+                const minLevelData = [
+                    {itemCode: '1020024', itemName: 'HIT (ECO) C311', unit: 'كيت', balance: 0, minLevel: 2, required: 0},
+                    {itemCode: '1020025', itemName: 'Hemolyzing Reagent - A1CD2 51ml', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1020049', itemName: 'ISE Cleaning Cobase', unit: 'علبة', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1020051', itemName: 'ALP2 L 400T C311', unit: 'كيت', balance: 2, minLevel: 2, required: 0},
+                    {itemCode: '1020082', itemName: 'IgG 150T C311', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1020089', itemName: 'Reaction  Cell  1*6  C311', unit: 'بدلة', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040026', itemName: 'Growth hormone 100T E411', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040027', itemName: 'HAV IgG 100T E411', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040028', itemName: 'HAV IgM 100T E411', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040044', itemName: 'Rubella IgG 100T E411', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040045', itemName: 'Rubella IgM 100T E411', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040052', itemName: 'Troponin I 100T E411', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040062', itemName: 'procell 2lit E411', unit: 'علبة', balance: 0, minLevel: 2, required: 0},
+                    {itemCode: '1040063', itemName: 'Cleancell 2lit E411', unit: 'علبة', balance: 0, minLevel: 2, required: 0},
+                    {itemCode: '1040069', itemName: 'P . C CMV IgM E411', unit: 'بدلة', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040071', itemName: 'P . C P C TOXO IgM', unit: 'كيت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040090', itemName: 'P . C CMV IgG E411', unit: 'باكت', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040092', itemName: 'Maintenace E2010 6 Month E411', unit: 'طقم', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040093', itemName: 'P . C Universal E411', unit: 'بدلة', balance: 0, minLevel: 1, required: 0},
+                    {itemCode: '1040099', itemName: 'P . C ACCP E411', unit: 'كيت', balance: 0, minLevel: 1, required: 0}
+                ];
+
+                systemData.inventory = minLevelData;
+                saveDataToStorage();
+                showAlert('تم تحميل بيانات الحد الأدنى بنجاح', 'success');
+            }
+        }
+
+        // تبديل التبويبات
+        function switchTab(tabId) {
+            // إزالة النشاط من جميع التبويبات
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // إخفاء جميع محتويات التبويبات
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // تفعيل التبويب المحدد
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+            
+            // تحديث المحتوى بناءً على التبويب
+            if (tabId === 'reports') {
+                initializeColumnToggles();
+            } else if (tabId === 'inventory') {
+                updateInventoryTable();
+            } else if (tabId === 'orders') {
+                updateOrdersTable();
+            }
+        }
+
+        // التعامل مع رفع الملفات
+        function handleFileUpload(e) {
+            const files = e.target.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            document.getElementById('uploadProgress').style.display = 'block';
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('progressText').textContent = 'جاري معالجة الملفات...';
+            
+            let processedFiles = 0;
+            
+            Array.from(files).forEach((file, index) => {
+                processFile(file, index, files.length).then(() => {
+                    processedFiles++;
+                    const progress = (processedFiles / files.length) * 100;
+                    document.getElementById('progressBar').style.width = `${progress}%`;
+                    document.getElementById('progressText').textContent = `معالجة ${processedFiles} من ${files.length} ملف`;
+                    
+                    if (processedFiles === files.length) {
+                        setTimeout(() => {
+                            document.getElementById('uploadProgress').style.display = 'none';
+                            showAlert(`تم معالجة ${files.length} ملف بنجاح`, 'success');
+                            updateFilesTable();
+                        }, 500);
+                    }
+                }).catch(error => {
+                    console.error('خطأ في معالجة الملف:', error);
+                    showAlert(`خطأ في معالجة الملف ${file.name}`, 'danger');
+                });
+            });
+        }
+
+        // معالجة الملف
+        async function processFile(file, index, total) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, {type: 'array'});
+                        
+                        // تحديد نوع الملف بناءً على الاسم
+                        let fileType = 'غير معروف';
+                        let fileName = file.name;
+                        
+                        if (fileName.includes('طلب شراء')) {
+                            fileType = 'طلب شراء';
+                            processPurchaseOrderFile(workbook, fileName);
+                        } else if (fileName.includes('الوارد')) {
+                            fileType = 'وارد';
+                            processArrivalsFile(workbook, fileName);
+                        } else if (fileName.includes('الحد الادنى')) {
+                            fileType = 'حد أدنى';
+                            processMinLevelFile(workbook, fileName);
+                        }
+                        
+                        // إضافة الملف إلى قائمة الملفات
+                        const fileData = {
+                            id: Date.now() + index,
+                            name: fileName,
+                            type: fileType,
+                            size: formatFileSize(file.size),
+                            date: new Date().toLocaleDateString('ar-SA'),
+                            status: 'تم المعالجة'
+                        };
+                        
+                        systemData.files.push(fileData);
+                        resolve();
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = function() {
+                    reject(new Error('خطأ في قراءة الملف'));
+                };
+                
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // معالجة ملف طلب الشراء
+        function processPurchaseOrderFile(workbook, fileName) {
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const data = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+            
+            // استخراج رقم الطلب من اسم الملف
+            const orderNumberMatch = fileName.match(/\d+/);
+            const orderNumber = orderNumberMatch ? orderNumberMatch[0] : `ORD-${Date.now()}`;
+            
+            // تخطي الصف الأول (العناوين)
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (row.length >= 4) {
+                    const itemCode = row[0] ? row[0].toString().trim() : '';
+                    const itemName = row[1] ? row[1].toString().trim() : '';
+                    const unit = row[2] ? row[2].toString().trim() : '';
+                    const quantity = parseFloat(row[3]) || 0;
+                    
+                    if (itemCode && quantity > 0) {
+                        // البحث عن الصنف في المخزون
+                        let inventoryItem = systemData.inventory.find(item => item.itemCode === itemCode);
+                        
+                        if (!inventoryItem) {
+                            // إضافة صنف جديد للمخزون
+                            inventoryItem = {
+                                itemCode,
+                                itemName,
+                                unit,
+                                balance: 0,
+                                minLevel: 1,
+                                required: quantity,
+                                orderNumber,
+                                arrived: 0,
+                                returned: 0,
+                                remaining: quantity
+                            };
+                            systemData.inventory.push(inventoryItem);
+                        } else {
+                            // تحديث الكمية المطلوبة
+                            inventoryItem.required += quantity;
+                            inventoryItem.remaining += quantity;
+                            if (!inventoryItem.orderNumber) {
+                                inventoryItem.orderNumber = orderNumber;
+                            }
+                        }
+                        
+                        // إضافة إلى طلبات الشراء
+                        const orderItem = {
+                            orderNumber,
+                            itemCode,
+                            itemName,
+                            quantity,
+                            arrived: 0,
+                            returned: 0,
+                            remaining: quantity,
+                            date: new Date().toISOString().split('T')[0],
+                            status: 'قيد الانتظار'
+                        };
+                        
+                        systemData.purchaseOrders.push(orderItem);
+                    }
+                }
+            }
+            
+            saveDataToStorage();
+        }
+
+        // معالجة ملف الوارد
+        function processArrivalsFile(workbook, fileName) {
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const data = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+            
+            // تخطي الصف الأول (العناوين)
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (row.length >= 9) {
+                    const returned = row[0] ? parseFloat(row[0]) : 0;
+                    const quantity = row[1] ? parseFloat(row[1]) : 0;
+                    const itemCode = row[8] ? row[8].toString().trim() : '';
+                    const itemName = row[7] ? row[7].toString().trim() : '';
+                    const documentType = row[5] ? row[5].toString().trim() : '';
+                    
+                    if (itemCode && (quantity > 0 || returned > 0)) {
+                        // تحديث المخزون
+                        let inventoryItem = systemData.inventory.find(item => item.itemCode === itemCode);
+                        
+                        if (!inventoryItem) {
+                            inventoryItem = {
+                                itemCode,
+                                itemName,
+                                unit: row[4] || 'وحدة',
+                                balance: quantity - returned,
+                                minLevel: 1,
+                                required: 0,
+                                arrived: quantity,
+                                returned: returned,
+                                remaining: 0
+                            };
+                            systemData.inventory.push(inventoryItem);
+                        } else {
+                            inventoryItem.balance += (quantity - returned);
+                            inventoryItem.arrived = (inventoryItem.arrived || 0) + quantity;
+                            inventoryItem.returned = (inventoryItem.returned || 0) + returned;
+                            
+                            // تحديث المتبقي من الطلب إذا كان هناك طلب
+                            if (inventoryItem.required > 0) {
+                                inventoryItem.remaining = Math.max(0, inventoryItem.required - inventoryItem.arrived + inventoryItem.returned);
+                            }
+                        }
+                        
+                        // إضافة إلى سجل الوارد
+                        const arrivalItem = {
+                            id: Date.now() + i,
+                            itemCode,
+                            itemName,
+                            quantity,
+                            returned,
+                            documentType,
+                            date: new Date().toISOString().split('T')[0],
+                            documentNumber: row[6] || ''
+                        };
+                        
+                        systemData.arrivals.push(arrivalItem);
+                        
+                        // تحديث حالة طلبات الشراء المرتبطة
+                        if (documentType === 'توريد مخزني' && quantity > 0) {
+                            updatePurchaseOrders(itemCode, quantity, returned);
+                        }
+                    }
+                }
+            }
+            
+            saveDataToStorage();
+            showNotification('تم تحديث المخزون بناءً على ملف الوارد', 'info');
+        }
+
+        // معالجة ملف الحد الأدنى
+        function processMinLevelFile(workbook, fileName) {
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const data = XLSX.utils.sheet_to_json(firstSheet, {header: 1});
+            
+            // تخطي الصف الأول (العناوين)
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (row.length >= 5) {
+                    const itemCode = row[0] ? row[0].toString().trim() : '';
+                    const itemName = row[1] ? row[1].toString().trim() : '';
+                    const unit = row[2] ? row[2].toString().trim() : '';
+                    const balance = parseFloat(row[3]) || 0;
+                    const minLevel = parseFloat(row[4]) || 1;
+                    
+                    if (itemCode) {
+                        // البحث عن الصنف في المخزون
+                        let inventoryItem = systemData.inventory.find(item => item.itemCode === itemCode);
+                        
+                        if (inventoryItem) {
+                            // تحديث الحد الأدنى
+                            inventoryItem.minLevel = minLevel;
+                            inventoryItem.balance = balance;
+                        } else {
+                            // إضافة صنف جديد
+                            inventoryItem = {
+                                itemCode,
+                                itemName,
+                                unit,
+                                balance,
+                                minLevel,
+                                required: 0,
+                                arrived: 0,
+                                returned: 0,
+                                remaining: 0
+                            };
+                            systemData.inventory.push(inventoryItem);
+                        }
+                    }
+                }
+            }
+            
+            saveDataToStorage();
+            updateInventoryTable();
+            showAlert('تم تحديث بيانات الحد الأدنى بنجاح', 'success');
+        }
+
+        // تحديث طلبات الشراء بناءً على الوارد
+        function updatePurchaseOrders(itemCode, arrivedQuantity, returnedQuantity) {
+            const orders = systemData.purchaseOrders.filter(order => 
+                order.itemCode === itemCode && order.remaining > 0
+            );
+            
+            let remainingArrived = arrivedQuantity;
+            
+            for (const order of orders) {
+                if (remainingArrived <= 0) break;
+                
+                const toDeduct = Math.min(order.remaining, remainingArrived);
+                order.arrived += toDeduct;
+                order.remaining -= toDeduct;
+                order.returned += returnedQuantity;
+                
+                if (order.remaining <= 0) {
+                    order.status = 'مكتمل';
+                } else {
+                    order.status = 'قيد الاستلام';
+                }
+                
+                remainingArrived -= toDeduct;
+            }
+            
+            saveDataToStorage();
+        }
+
+        // تحديث جدول الملفات
+        function updateFilesTable() {
+            const tbody = document.getElementById('filesTableBody');
+            tbody.innerHTML = '';
+            
+            if (systemData.files.length === 0) {
+                document.getElementById('uploadedFiles').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('uploadedFiles').style.display = 'block';
+            
+            systemData.files.slice().reverse().forEach(file => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${file.name}</td>
+                    <td><span class="status-badge ${getFileTypeClass(file.type)}">${file.type}</span></td>
+                    <td>${file.size}</td>
+                    <td>${file.date}</td>
+                    <td><span class="status-badge status-ok">${file.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="viewFileDetails(${file.id})">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteFile(${file.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // تحليل جميع البيانات
+        function analyzeAllData() {
+            if (systemData.inventory.length === 0 && systemData.purchaseOrders.length === 0) {
+                showAlert('لا توجد بيانات لتحليلها', 'warning');
+                return;
+            }
+            
+            document.getElementById('analysisResults').style.display = 'block';
+            
+            // تحديث ملخص البيانات
+            const totalItems = systemData.inventory.length;
+            const lowStockItems = systemData.inventory.filter(item => item.balance < item.minLevel).length;
+            const zeroStockItems = systemData.inventory.filter(item => item.balance <= 0).length;
+            const totalRequired = systemData.inventory.reduce((sum, item) => sum + (item.required || 0), 0);
+            const totalArrived = systemData.inventory.reduce((sum, item) => sum + (item.arrived || 0), 0);
+            const totalRemaining = systemData.inventory.reduce((sum, item) => sum + (item.remaining || 0), 0);
+            
+            document.getElementById('dataSummary').innerHTML = `
+                <p><strong>إجمالي الأصناف:</strong> ${totalItems}</p>
+                <p><strong>الأصناف أقل من الحد الأدنى:</strong> ${lowStockItems}</p>
+                <p><strong>الأصناف بالرصيد صفر:</strong> ${zeroStockItems}</p>
+                <p><strong>إجمالي الكمية المطلوبة:</strong> ${totalRequired}</p>
+                <p><strong>إجمالي الكمية الواردة:</strong> ${totalArrived}</p>
+                <p><strong>إجمالي المتبقي من الطلبات:</strong> ${totalRemaining}</p>
+            `;
+            
+            // تحديث الإحصائيات السريعة
+            const pendingOrders = systemData.purchaseOrders.filter(order => order.status === 'قيد الانتظار').length;
+            const completedOrders = systemData.purchaseOrders.filter(order => order.status === 'مكتمل').length;
+            const totalOrders = systemData.purchaseOrders.length;
+            const totalFiles = systemData.files.length;
+            
+            document.getElementById('quickStats').innerHTML = `
+                <p><strong>إجمالي طلبات الشراء:</strong> ${totalOrders}</p>
+                <p><strong>الطلبات قيد الانتظار:</strong> ${pendingOrders}</p>
+                <p><strong>الطلبات المكتملة:</strong> ${completedOrders}</p>
+                <p><strong>الملفات المرفوعة:</strong> ${totalFiles}</p>
+                <p><strong>آخر تحديث:</strong> ${new Date().toLocaleString('ar-SA')}</p>
+            `;
+            
+            showAlert('تم تحليل جميع البيانات بنجاح', 'success');
+        }
+
+        // إعادة تعيين البيانات
+        function resetSystemData() {
+            if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟ هذه العملية لا يمكن التراجع عنها.')) {
+                systemData = {
+                    inventory: [],
+                    purchaseOrders: [],
+                    arrivals: [],
+                    files: [],
+                    settings: systemData.settings
+                };
+                
+                saveDataToStorage();
+                updateFilesTable();
+                updateInventoryTable();
+                updateOrdersTable();
+                
+                document.getElementById('analysisResults').style.display = 'none';
+                showAlert('تم إعادة تعيين جميع البيانات بنجاح', 'success');
+            }
+        }
+
+        // تحديث جدول المخزون
+        function updateInventoryTable() {
+            const tbody = document.getElementById('inventoryTableBody');
+            tbody.innerHTML = '';
+            
+            if (systemData.inventory.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="12" style="text-align: center; padding: 30px; color: #6c757d;">لا توجد بيانات للمخزون</td>`;
+                tbody.appendChild(row);
+                document.getElementById('lowStockCount').textContent = '0';
+                return;
+            }
+            
+            let lowStockCount = 0;
+            
+            systemData.inventory.forEach(item => {
+                const status = getInventoryStatus(item);
+                if (status === 'low') lowStockCount++;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.itemCode}</td>
+                    <td>${item.itemName}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.balance}</td>
+                    <td>${item.minLevel}</td>
+                    <td>${item.required || 0}</td>
+                    <td>${item.orderNumber || '-'}</td>
+                    <td>${item.arrived || 0}</td>
+                    <td>${item.returned || 0}</td>
+                    <td>${item.remaining || 0}</td>
+                    <td><span class="status-badge ${getStatusClass(status)}">${getStatusText(status)}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-warning" onclick="editInventoryItem('${item.itemCode}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteInventoryItem('${item.itemCode}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            document.getElementById('lowStockCount').textContent = lowStockCount;
+            
+            // تحديث تنبيه المخزون
+            const alertElement = document.querySelector('.alert-warning');
+            if (lowStockCount > 0) {
+                alertElement.style.display = 'flex';
+            } else {
+                alertElement.style.display = 'none';
+            }
+        }
+
+        // تحديث جدول الطلبات
+        function updateOrdersTable() {
+            const tbody = document.getElementById('ordersTableBody');
+            tbody.innerHTML = '';
+            
+            if (systemData.purchaseOrders.length === 0) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td colspan="10" style="text-align: center; padding: 30px; color: #6c757d;">لا توجد طلبات شراء</td>`;
+                tbody.appendChild(row);
+                return;
+            }
+            
+            systemData.purchaseOrders.slice().reverse().forEach(order => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${order.orderNumber}</td>
+                    <td>${order.itemCode}</td>
+                    <td>${order.itemName}</td>
+                    <td>${order.quantity}</td>
+                    <td>${order.arrived}</td>
+                    <td>${order.returned}</td>
+                    <td>${order.remaining}</td>
+                    <td>${order.date}</td>
+                    <td><span class="status-badge ${getOrderStatusClass(order.status)}">${order.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="updateOrderArrival('${order.orderNumber}', '${order.itemCode}')">
+                            <i class="fas fa-truck"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${order.orderNumber}', '${order.itemCode}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // تحديث قائمة الأصناف في نموذج إضافة الطلب
+            updateOrderItemsSelect();
+        }
+
+        // إنشاء التقرير
+        function generateReport() {
+            const reportType = document.getElementById('reportType').value;
+            const sortBy = document.getElementById('sortBy').value;
+            const inventoryStatus = document.getElementById('inventoryStatus').value;
+            
+            let data = [];
+            let columns = [];
+            
+            switch (reportType) {
+                case 'inventory':
+                    data = [...systemData.inventory];
+                    columns = [
+                        {id: 'itemCode', name: 'رقم الصنف', visible: true},
+                        {id: 'itemName', name: 'اسم الصنف', visible: true},
+                        {id: 'unit', name: 'الوحدة', visible: true},
+                        {id: 'balance', name: 'الرصيد', visible: true},
+                        {id: 'minLevel', name: 'الحد الأدنى', visible: true},
+                        {id: 'required', name: 'الكمية المطلوبة', visible: true},
+                        {id: 'status', name: 'الحالة', visible: true}
+                    ];
+                    
+                    // تصفية حسب حالة المخزون
+                    if (inventoryStatus !== 'all') {
+                        data = data.filter(item => {
+                            const status = getInventoryStatus(item);
+                            return status === inventoryStatus;
+                        });
+                    }
+                    break;
+                    
+                case 'purchase':
+                    data = [...systemData.purchaseOrders];
+                    columns = [
+                        {id: 'orderNumber', name: 'رقم الطلب', visible: true},
+                        {id: 'itemCode', name: 'رقم الصنف', visible: true},
+                        {id: 'itemName', name: 'اسم الصنف', visible: true},
+                        {id: 'quantity', name: 'الكمية المطلوبة', visible: true},
+                        {id: 'arrived', name: 'الكمية الواردة', visible: true},
+                        {id: 'remaining', name: 'المتبقي', visible: true},
+                        {id: 'date', name: 'تاريخ الطلب', visible: true},
+                        {id: 'status', name: 'الحالة', visible: true}
+                    ];
+                    break;
+                    
+                case 'arrivals':
+                    data = [...systemData.arrivals];
+                    columns = [
+                        {id: 'documentNumber', name: 'رقم المستند', visible: true},
+                        {id: 'itemCode', name: 'رقم الصنف', visible: true},
+                        {id: 'itemName', name: 'اسم الصنف', visible: true},
+                        {id: 'quantity', name: 'الكمية', visible: true},
+                        {id: 'returned', name: 'المرتجع', visible: true},
+                        {id: 'documentType', name: 'نوع المستند', visible: true},
+                        {id: 'date', name: 'التاريخ', visible: true}
+                    ];
+                    break;
+                    
+                case 'analysis':
+                    data = generateAnalysisData();
+                    columns = [
+                        {id: 'category', name: 'الفئة', visible: true},
+                        {id: 'count', name: 'العدد', visible: true},
+                        {id: 'percentage', name: 'النسبة', visible: true},
+                        {id: 'details', name: 'التفاصيل', visible: true}
+                    ];
+                    break;
+            }
+            
+            // الفرز
+            data.sort((a, b) => {
+                if (sortBy === 'itemCode') return a.itemCode.localeCompare(b.itemCode);
+                if (sortBy === 'itemName') return a.itemName.localeCompare(b.itemName);
+                if (sortBy === 'balance') return b.balance - a.balance;
+                if (sortBy === 'minLevel') return b.minLevel - a.minLevel;
+                if (sortBy === 'required') return b.required - a.required;
+                return 0;
+            });
+            
+            // عرض التقرير
+            displayReport(data, columns, reportType);
+            
+            // عرض الرسومات البيانية
+            if (reportType === 'inventory' || reportType === 'analysis') {
+                displayCharts();
+                document.getElementById('chartsSection').style.display = 'block';
+            } else {
+                document.getElementById('chartsSection').style.display = 'none';
+            }
+            
+            showAlert('تم إنشاء التقرير بنجاح', 'success');
+        }
+
+        // عرض التقرير
+        function displayReport(data, columns, reportType) {
+            const reportContent = document.getElementById('reportContent');
+            
+            if (data.length === 0) {
+                reportContent.innerHTML = `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        لا توجد بيانات لعرضها في التقرير.
+                    </div>
+                `;
+                return;
+            }
+            
+            let tableHTML = `
+                <div class="table-responsive">
+                    <table class="table" id="reportTable">
+                        <thead>
+                            <tr>
+            `;
+            
+            // العناوين
+            columns.forEach(col => {
+                if (col.visible) {
+                    tableHTML += `<th>${col.name}</th>`;
+                }
+            });
+            
+            tableHTML += `
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            // البيانات
+            data.forEach(item => {
+                tableHTML += `<tr>`;
+                
+                columns.forEach(col => {
+                    if (!col.visible) return;
+                    
+                    let cellValue = '';
+                    
+                    if (reportType === 'inventory' && col.id === 'status') {
+                        const status = getInventoryStatus(item);
+                        cellValue = `<span class="status-badge ${getStatusClass(status)}">${getStatusText(status)}</span>`;
+                    } else if (col.id === 'percentage') {
+                        cellValue = `${item[col.id]}%`;
+                    } else {
+                        cellValue = item[col.id] || '-';
+                    }
+                    
+                    tableHTML += `<td>${cellValue}</td>`;
+                });
+                
+                tableHTML += `</tr>`;
+            });
+            
+            tableHTML += `
+                        </tbody>
+                    </table>
+                </div>
+                <div class="no-print" style="margin-top: 15px; text-align: left;">
+                    <p><strong>إجمالي السجلات:</strong> ${data.length}</p>
+                    <p><strong>تاريخ التقرير:</strong> ${new Date().toLocaleDateString('ar-SA')}</p>
+                </div>
+            `;
+            
+            reportContent.innerHTML = tableHTML;
+            
+            // تحديث مفاتيح تبديل الأعمدة
+            updateColumnToggles(columns);
+        }
+
+        // إنشاء بيانات التحليل
+        function generateAnalysisData() {
+            const totalItems = systemData.inventory.length;
+            const lowStockItems = systemData.inventory.filter(item => item.balance < item.minLevel).length;
+            const zeroStockItems = systemData.inventory.filter(item => item.balance <= 0).length;
+            const okStockItems = totalItems - lowStockItems - zeroStockItems;
+            
+            const totalOrders = systemData.purchaseOrders.length;
+            const pendingOrders = systemData.purchaseOrders.filter(order => order.status === 'قيد الانتظار').length;
+            const partialOrders = systemData.purchaseOrders.filter(order => order.status === 'قيد الاستلام').length;
+            const completedOrders = systemData.purchaseOrders.filter(order => order.status === 'مكتمل').length;
+            
+            return [
+                {
+                    category: 'حالة المخزون',
+                    count: totalItems,
+                    percentage: Math.round((totalItems / totalItems) * 100),
+                    details: `${okStockItems} طبيعي, ${lowStockItems} منخفض, ${zeroStockItems} صفر`
+                },
+                {
+                    category: 'مخزون منخفض',
+                    count: lowStockItems,
+                    percentage: Math.round((lowStockItems / totalItems) * 100),
+                    details: `${lowStockItems} صنف أقل من الحد الأدنى`
+                },
+                {
+                    category: 'مخزون صفر',
+                    count: zeroStockItems,
+                    percentage: Math.round((zeroStockItems / totalItems) * 100),
+                    details: `${zeroStockItems} صنف بدون رصيد`
+                },
+                {
+                    category: 'طلبات الشراء',
+                    count: totalOrders,
+                    percentage: totalOrders > 0 ? 100 : 0,
+                    details: `${pendingOrders} قيد الانتظار, ${partialOrders} قيد الاستلام, ${completedOrders} مكتمل`
+                },
+                {
+                    category: 'الملفات المرفوعة',
+                    count: systemData.files.length,
+                    percentage: systemData.files.length > 0 ? 100 : 0,
+                    details: `${systemData.files.length} ملف تم معالجته`
+                }
+            ];
+        }
+
+        // عرض الرسومات البيانية
+        function displayCharts() {
+            // توزيع حالة المخزون
+            const inventoryCtx = document.getElementById('inventoryChart').getContext('2d');
+            
+            const lowStockItems = systemData.inventory.filter(item => item.balance < item.minLevel && item.balance > 0).length;
+            const zeroStockItems = systemData.inventory.filter(item => item.balance <= 0).length;
+            const okStockItems = systemData.inventory.filter(item => item.balance >= item.minLevel).length;
+            
+            if (window.inventoryChartInstance) {
+                window.inventoryChartInstance.destroy();
+            }
+            
+            window.inventoryChartInstance = new Chart(inventoryCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['طبيعي', 'منخفض', 'صفر'],
+                    datasets: [{
+                        data: [okStockItems, lowStockItems, zeroStockItems],
+                        backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            rtl: true
+                        },
+                        title: {
+                            display: true,
+                            text: 'توزيع حالة المخزون',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // أعلى 10 أصناف مطلوبة
+            const requiredCtx = document.getElementById('requiredItemsChart').getContext('2d');
+            
+            const requiredItems = [...systemData.inventory]
+                .filter(item => item.required > 0)
+                .sort((a, b) => b.required - a.required)
+                .slice(0, 10);
+            
+            if (window.requiredChartInstance) {
+                window.requiredChartInstance.destroy();
+            }
+            
+            window.requiredChartInstance = new Chart(requiredCtx, {
+                type: 'bar',
+                data: {
+                    labels: requiredItems.map(item => item.itemCode),
+                    datasets: [{
+                        label: 'الكمية المطلوبة',
+                        data: requiredItems.map(item => item.required),
+                        backgroundColor: '#1a5f7a',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'أعلى 10 أصناف مطلوبة',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'الكمية'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'رقم الصنف'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // طباعة التقرير
+        function printReport() {
+            const printContent = document.getElementById('reportContent').innerHTML;
+            const chartsSection = document.getElementById('chartsSection').innerHTML;
+            
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <title>تقرير نظام المخزون الطبي</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: right; }
+                        th { background-color: #f2f2f2; }
+                        h1 { color: #1a5f7a; text-align: center; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .footer { margin-top: 30px; text-align: left; font-size: 12px; color: #666; }
+                        .chart-container { width: 100%; height: 300px; margin: 20px 0; }
+                        .status-badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 12px; }
+                        .status-ok { background-color: #e8f7ef; color: #00b894; }
+                        .status-low { background-color: #ffeaea; color: #d63031; }
+                        .status-zero { background-color: #f8d7da; color: #721c24; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>تقرير نظام المخزون الطبي</h1>
+                        <p>مركز المامون الطبي التشخيصي</p>
+                        <p>تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}</p>
+                    </div>
+                    ${printContent}
+                    ${document.getElementById('chartsSection').style.display !== 'none' ? chartsSection : ''}
+                    <div class="footer">
+                        <p>تم إنشاء التقرير بواسطة نظام إدارة المخزون الطبي</p>
+                        <p>المطور: سام جميل القدسي - 774432141 - thelordsamjamil@gmail.com</p>
+                    </div>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
+        }
+
+        // تصدير إلى Excel
+        function exportToExcel() {
+            const table = document.getElementById('reportTable');
+            if (!table) {
+                showAlert('لا توجد بيانات لتصديرها', 'warning');
+                return;
+            }
+            
+            const ws = XLSX.utils.table_to_sheet(table);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "تقرير");
+            
+            const fileName = `تقرير_المخزون_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            
+            showAlert('تم تصدير التقرير إلى Excel بنجاح', 'success');
+        }
+
+        // تحديث التقرير
+        function refreshReport() {
+            generateReport();
+        }
+
+        // تصفية بيانات التقرير
+        function filterReportData() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const table = document.getElementById('reportTable');
+            
+            if (!table) return;
+            
+            const rows = table.getElementsByTagName('tr');
+            
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let rowText = '';
+                
+                for (const cell of cells) {
+                    rowText += cell.textContent.toLowerCase() + ' ';
+                }
+                
+                if (rowText.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+
+        // تهيئة مفاتيح تبديل الأعمدة
+        function initializeColumnToggles() {
+            const columnToggle = document.getElementById('columnToggle');
+            columnToggle.innerHTML = '';
+            
+            // سيتم تحديث هذا في displayReport
+        }
+
+        // تحديث مفاتيح تبديل الأعمدة
+        function updateColumnToggles(columns) {
+            const columnToggle = document.getElementById('columnToggle');
+            columnToggle.innerHTML = '';
+            
+            columns.forEach((col, index) => {
+                const toggleId = `toggle-${col.id}`;
+                const toggle = document.createElement('div');
+                toggle.style.display = 'flex';
+                toggle.style.alignItems = 'center';
+                toggle.style.gap = '5px';
+                
+                toggle.innerHTML = `
+                    <input type="checkbox" id="${toggleId}" ${col.visible ? 'checked' : ''} 
+                           onchange="toggleColumnVisibility(${index}, this.checked)">
+                    <label for="${toggleId}" style="margin: 0; font-size: 0.9rem;">${col.name}</label>
+                `;
+                
+                columnToggle.appendChild(toggle);
+            });
+        }
+
+        // تبديل رؤية العمود
+        function toggleColumnVisibility(columnIndex, isVisible) {
+            const table = document.getElementById('reportTable');
+            if (!table) return;
+            
+            const headers = table.getElementsByTagName('th');
+            const rows = table.getElementsByTagName('tr');
+            
+            // تبديل رؤية رأس العمود
+            if (headers[columnIndex]) {
+                headers[columnIndex].style.display = isVisible ? '' : 'none';
+            }
+            
+            // تبديل رؤية خلايا العمود في جميع الصفوف
+            for (let i = 1; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                if (cells[columnIndex]) {
+                    cells[columnIndex].style.display = isVisible ? '' : 'none';
+                }
+            }
+        }
+
+        // عرض نافذة إضافة صنف للمخزون
+        function showAddInventoryModal() {
+            document.getElementById('addInventoryModal').classList.add('show');
+        }
+
+        // حفظ صنف جديد للمخزون
+        function saveInventoryItem() {
+            const itemCode = document.getElementById('newItemCode').value.trim();
+            const itemName = document.getElementById('newItemName').value.trim();
+            const unit = document.getElementById('newItemUnit').value;
+            const balance = parseInt(document.getElementById('newItemBalance').value) || 0;
+            const minLevel = parseInt(document.getElementById('newItemMinLevel').value) || 1;
+            
+            if (!itemCode || !itemName || !unit) {
+                showAlert('يرجى ملء جميع الحقول المطلوبة', 'danger');
+                return;
+            }
+            
+            // التحقق من عدم تكرار رقم الصنف
+            const existingItem = systemData.inventory.find(item => item.itemCode === itemCode);
+            if (existingItem) {
+                showAlert('رقم الصنف موجود بالفعل في النظام', 'danger');
+                return;
+            }
+            
+            // إضافة الصنف الجديد
+            const newItem = {
+                itemCode,
+                itemName,
+                unit,
+                balance,
+                minLevel,
+                required: 0,
+                arrived: 0,
+                returned: 0,
+                remaining: 0
+            };
+            
+            systemData.inventory.push(newItem);
+            saveDataToStorage();
+            updateInventoryTable();
+            
+            // إغلاق النافذة المنبثقة
+            document.getElementById('addInventoryModal').classList.remove('show');
+            
+            // إعادة تعيين النموذج
+            document.getElementById('addInventoryForm').reset();
+            
+            showAlert('تم إضافة الصنف الجديد بنجاح', 'success');
+        }
+
+        // تعديل بيانات الصنف
+        function editInventoryItem(itemCode) {
+            const item = systemData.inventory.find(item => item.itemCode === itemCode);
+            if (!item) return;
+            
+            document.getElementById('editItemCode').value = item.itemCode;
+            document.getElementById('editItemName').value = item.itemName;
+            document.getElementById('editItemBalance').value = item.balance;
+            document.getElementById('editItemMinLevel').value = item.minLevel;
+            document.getElementById('editItemRequired').value = item.required || 0;
+            
+            document.getElementById('editInventoryModal').classList.add('show');
+        }
+
+        // تحديث بيانات الصنف
+        function updateInventoryItem() {
+            const itemCode = document.getElementById('editItemCode').value.trim();
+            const itemName = document.getElementById('editItemName').value.trim();
+            const balance = parseInt(document.getElementById('editItemBalance').value) || 0;
+            const minLevel = parseInt(document.getElementById('editItemMinLevel').value) || 1;
+            const required = parseInt(document.getElementById('editItemRequired').value) || 0;
+            
+            const itemIndex = systemData.inventory.findIndex(item => item.itemCode === itemCode);
+            if (itemIndex === -1) return;
+            
+            // تحديث البيانات
+            systemData.inventory[itemIndex].itemName = itemName;
+            systemData.inventory[itemIndex].balance = balance;
+            systemData.inventory[itemIndex].minLevel = minLevel;
+            systemData.inventory[itemIndex].required = required;
+            systemData.inventory[itemIndex].remaining = Math.max(0, required - (systemData.inventory[itemIndex].arrived || 0));
+            
+            saveDataToStorage();
+            updateInventoryTable();
+            
+            // إغلاق النافذة المنبثقة
+            document.getElementById('editInventoryModal').classList.remove('show');
+            
+            showAlert('تم تحديث بيانات الصنف بنجاح', 'success');
+        }
+
+        // حذف صنف من المخزون
+        function deleteInventoryItem(itemCode) {
+            if (!confirm('هل أنت متأكد من حذف هذا الصنف؟')) return;
+            
+            const itemIndex = systemData.inventory.findIndex(item => item.itemCode === itemCode);
+            if (itemIndex === -1) return;
+            
+            // حذف جميع طلبات الشراء المرتبطة بهذا الصنف
+            systemData.purchaseOrders = systemData.purchaseOrders.filter(order => order.itemCode !== itemCode);
+            
+            // حذف الصنف
+            systemData.inventory.splice(itemIndex, 1);
+            
+            saveDataToStorage();
+            updateInventoryTable();
+            updateOrdersTable();
+            
+            showAlert('تم حذف الصنف بنجاح', 'success');
+        }
+
+        // تحديث الحد الأدنى
+        function updateMinLevels() {
+            if (systemData.inventory.length === 0) {
+                showAlert('لا توجد أصناف في المخزون', 'warning');
+                return;
+            }
+            
+            let updatedCount = 0;
+            
+            // هنا يمكن إضافة منطق لتحديث الحد الأدنى بناءً على البيانات التاريخية
+            // في هذا المثال، سنقوم بزيادة الحد الأدنى للأصناف التي لديها طلبات متكررة
+            systemData.inventory.forEach(item => {
+                if (item.required && item.required > 10) {
+                    const newMinLevel = Math.max(item.minLevel, Math.ceil(item.required / 10));
+                    if (newMinLevel > item.minLevel) {
+                        item.minLevel = newMinLevel;
+                        updatedCount++;
+                    }
+                }
+            });
+            
+            saveDataToStorage();
+            updateInventoryTable();
+            
+            showAlert(`تم تحديث الحد الأدنى لـ ${updatedCount} صنف`, 'success');
+        }
+
+        // عرض نافذة إضافة طلب شراء
+        function showAddOrderModal() {
+            // تحديث قائمة الأصناف
+            updateOrderItemsSelect();
+            
+            // تعيين تاريخ اليوم
+            document.getElementById('newOrderDate').value = new Date().toISOString().split('T')[0];
+            
+            document.getElementById('addOrderModal').classList.add('show');
+        }
+
+        // تحديث قائمة الأصناف في نموذج الطلب
+        function updateOrderItemsSelect() {
+            const select = document.getElementById('newOrderItemCode');
+            select.innerHTML = '<option value="">اختر رقم الصنف</option>';
+            
+            systemData.inventory.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.itemCode;
+                option.textContent = `${item.itemCode} - ${item.itemName}`;
+                select.appendChild(option);
+            });
+        }
+
+        // تحديث اسم الصنف عند اختيار رقم الصنف
+        function updateOrderItemName() {
+            const itemCode = document.getElementById('newOrderItemCode').value;
+            const item = systemData.inventory.find(item => item.itemCode === itemCode);
+            
+            if (item) {
+                document.getElementById('newOrderItemName').value = item.itemName;
+            } else {
+                document.getElementById('newOrderItemName').value = '';
+            }
+        }
+
+        // حفظ طلب شراء جديد
+        function saveOrderItem() {
+            const orderNumber = document.getElementById('newOrderNumber').value.trim();
+            const itemCode = document.getElementById('newOrderItemCode').value;
+            const itemName = document.getElementById('newOrderItemName').value.trim();
+            const quantity = parseInt(document.getElementById('newOrderQuantity').value) || 0;
+            const date = document.getElementById('newOrderDate').value;
+            
+            if (!orderNumber || !itemCode || !itemName || quantity <= 0) {
+                showAlert('يرجى ملء جميع الحقول المطلوبة بشكل صحيح', 'danger');
+                return;
+            }
+            
+            // البحث عن الصنف في المخزون
+            let inventoryItem = systemData.inventory.find(item => item.itemCode === itemCode);
+            
+            if (!inventoryItem) {
+                // إضافة صنف جديد للمخزون
+                inventoryItem = {
+                    itemCode,
+                    itemName,
+                    unit: 'وحدة',
+                    balance: 0,
+                    minLevel: 1,
+                    required: quantity,
+                    orderNumber,
+                    arrived: 0,
+                    returned: 0,
+                    remaining: quantity
+                };
+                systemData.inventory.push(inventoryItem);
+            } else {
+                // تحديث الكمية المطلوبة
+                inventoryItem.required = (inventoryItem.required || 0) + quantity;
+                inventoryItem.remaining = (inventoryItem.remaining || 0) + quantity;
+                inventoryItem.orderNumber = orderNumber;
+            }
+            
+            // إضافة طلب الشراء
+            const orderItem = {
+                orderNumber,
+                itemCode,
+                itemName,
+                quantity,
+                arrived: 0,
+                returned: 0,
+                remaining: quantity,
+                date,
+                status: 'قيد الانتظار'
+            };
+            
+            systemData.purchaseOrders.push(orderItem);
+            saveDataToStorage();
+            updateInventoryTable();
+            updateOrdersTable();
+            
+            // إغلاق النافذة المنبثقة
+            document.getElementById('addOrderModal').classList.remove('show');
+            
+            // إعادة تعيين النموذج
+            document.getElementById('addOrderForm').reset();
+            
+            showAlert('تم إضافة طلب الشراء بنجاح', 'success');
+        }
+
+        // ربط الطلبات بالحد الأدنى
+        function linkOrdersToMinLevel() {
+            let linkedCount = 0;
+            
+            systemData.inventory.forEach(item => {
+                if (item.balance < item.minLevel && item.required === 0) {
+                    // حساب الكمية المطلوبة بناءً على الفرق بين الحد الأدنى والرصيد
+                    const requiredQty = item.minLevel - item.balance;
+                    
+                    if (requiredQty > 0) {
+                        item.required = requiredQty;
+                        item.remaining = requiredQty;
+                        
+                        // إنشاء طلب شراء تلقائي
+                        const orderNumber = `AUTO-${Date.now()}`;
+                        const orderItem = {
+                            orderNumber,
+                            itemCode: item.itemCode,
+                            itemName: item.itemName,
+                            quantity: requiredQty,
+                            arrived: 0,
+                            returned: 0,
+                            remaining: requiredQty,
+                            date: new Date().toISOString().split('T')[0],
+                            status: 'قيد الانتظار'
+                        };
+                        
+                        systemData.purchaseOrders.push(orderItem);
+                        linkedCount++;
+                    }
+                }
+            });
+            
+            saveDataToStorage();
+            updateInventoryTable();
+            updateOrdersTable();
+            
+            showAlert(`تم ربط ${linkedCount} صنف بطلبات شراء تلقائية`, 'success');
+        }
+
+        // تحديث وصول طلب
+        function updateOrderArrival(orderNumber, itemCode) {
+            const arrivalQty = prompt(`أدخل الكمية الواردة للطلب ${orderNumber} والصنف ${itemCode}:`, '0');
+            if (arrivalQty === null) return;
+            
+            const quantity = parseInt(arrivalQty) || 0;
+            if (quantity <= 0) {
+                showAlert('يجب إدخال كمية صحيحة أكبر من صفر', 'danger');
+                return;
+            }
+            
+            // تحديث طلب الشراء
+            const orderIndex = systemData.purchaseOrders.findIndex(order => 
+                order.orderNumber === orderNumber && order.itemCode === itemCode
+            );
+            
+            if (orderIndex === -1) return;
+            
+            const order = systemData.purchaseOrders[orderIndex];
+            order.arrived += quantity;
+            order.remaining = Math.max(0, order.quantity - order.arrived);
+            
+            if (order.remaining <= 0) {
+                order.status = 'مكتمل';
+            } else {
+                order.status = 'قيد الاستلام';
+            }
+            
+            // تحديث المخزون
+            const inventoryItem = systemData.inventory.find(item => item.itemCode === itemCode);
+            if (inventoryItem) {
+                inventoryItem.balance += quantity;
+                inventoryItem.arrived = (inventoryItem.arrived || 0) + quantity;
+                inventoryItem.remaining = Math.max(0, (inventoryItem.required || 0) - (inventoryItem.arrived || 0));
+            }
+            
+            // إضافة إلى سجل الوارد
+            const arrivalItem = {
+                id: Date.now(),
+                itemCode,
+                itemName: order.itemName,
+                quantity,
+                returned: 0,
+                documentType: 'توريد مخزني',
+                date: new Date().toISOString().split('T')[0],
+                documentNumber: orderNumber
+            };
+            
+            systemData.arrivals.push(arrivalItem);
+            
+            saveDataToStorage();
+            updateInventoryTable();
+            updateOrdersTable();
+            
+            showAlert('تم تحديث وصول الطلب بنجاح', 'success');
+        }
+
+        // حذف طلب
+        function deleteOrder(orderNumber, itemCode) {
+            if (!confirm('هل أنت متأكد من حذف هذا الطلب؟')) return;
+            
+            // حذف طلب الشراء
+            systemData.purchaseOrders = systemData.purchaseOrders.filter(order => 
+                !(order.orderNumber === orderNumber && order.itemCode === itemCode)
+            );
+            
+            // تحديث المخزون
+            const inventoryItem = systemData.inventory.find(item => item.itemCode === itemCode);
+            if (inventoryItem) {
+                inventoryItem.required = Math.max(0, (inventoryItem.required || 0) - 1);
+                inventoryItem.remaining = Math.max(0, (inventoryItem.remaining || 0) - 1);
+            }
+            
+            saveDataToStorage();
+            updateOrdersTable();
+            updateInventoryTable();
+            
+            showAlert('تم حذف الطلب بنجاح', 'success');
+        }
+
+        // حفظ الإعدادات العامة
+        function saveGeneralSettings() {
+            const autoUpdate = document.getElementById('autoUpdate').value === '1';
+            const itemsPerPage = parseInt(document.getElementById('itemsPerPage').value) || 20;
+            
+            systemData.settings.autoUpdate = autoUpdate;
+            systemData.settings.itemsPerPage = itemsPerPage;
+            
+            saveDataToStorage();
+            showAlert('تم حفظ الإعدادات بنجاح', 'success');
+        }
+
+        // نسخ احتياطي للبيانات
+        function backupData() {
+            const dataStr = JSON.stringify(systemData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `نسخة_احتياطية_نظام_المخزون_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showAlert('تم إنشاء نسخة احتياطية بنجاح', 'success');
+        }
+
+        // إعادة تعيين النظام
+        function resetSystem() {
+            if (confirm('هل أنت متأكد من إعادة تعيين النظام بالكامل؟ جميع البيانات سيتم حذفها ولا يمكن استعادتها.')) {
+                localStorage.removeItem('medicalInventorySystem');
+                systemData = {
+                    inventory: [],
+                    purchaseOrders: [],
+                    arrivals: [],
+                    files: [],
+                    settings: {
+                        autoUpdate: true,
+                        itemsPerPage: 20
+                    }
+                };
+                
+                updateUI();
+                showAlert('تم إعادة تعيين النظام بالكامل بنجاح', 'success');
+            }
+        }
+
+        // عرض تفاصيل الملف
+        function viewFileDetails(fileId) {
+            const file = systemData.files.find(f => f.id === fileId);
+            if (!file) return;
+            
+            alert(`تفاصيل الملف:\n\nالاسم: ${file.name}\nالنوع: ${file.type}\nالحجم: ${file.size}\nالتاريخ: ${file.date}\nالحالة: ${file.status}`);
+        }
+
+        // حذف الملف
+        function deleteFile(fileId) {
+            if (!confirm('هل أنت متأكد من حذف هذا الملف؟')) return;
+            
+            systemData.files = systemData.files.filter(f => f.id !== fileId);
+            saveDataToStorage();
+            updateFilesTable();
+            
+            showAlert('تم حذف الملف بنجاح', 'success');
+        }
+
+        // وظائف مساعدة
+        function saveDataToStorage() {
+            localStorage.setItem('medicalInventorySystem', JSON.stringify(systemData));
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : type === 'danger' ? 'times-circle' : 'info-circle'}"></i>
+                ${message}
+                <button style="margin-right: auto; background: none; border: none; color: inherit;" onclick="this.parentElement.remove()">&times;</button>
+            `;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                if (alertDiv.parentElement) {
+                    alertDiv.remove();
+                }
+            }, 5000);
+        }
+
+        function showNotification(message, type) {
+            // يمكن تطوير هذه الوظيفة لعرض إشعارات أكثر تطوراً
+            console.log(`إشعار (${type}): ${message}`);
+        }
+
+        function updateUI() {
+            updateInventoryTable();
+            updateOrdersTable();
+            updateFilesTable();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 بايت';
+            const k = 1024;
+            const sizes = ['بايت', 'كيلوبايت', 'ميجابايت', 'جيجابايت'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        }
+
+        function getFileTypeClass(fileType) {
+            switch(fileType) {
+                case 'طلب شراء': return 'status-warning';
+                case 'وارد': return 'status-ok';
+                case 'حد أدنى': return 'status-low';
+                default: return '';
+            }
+        }
+
+        function getInventoryStatus(item) {
+            if (item.balance <= 0) return 'zero';
+            if (item.balance < item.minLevel) return 'low';
+            return 'ok';
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'low': return 'status-low';
+                case 'zero': return 'status-low';
+                case 'ok': return 'status-ok';
+                default: return '';
+            }
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'low': return 'منخفض';
+                case 'zero': return 'صفر';
+                case 'ok': return 'طبيعي';
+                default: return 'غير معروف';
+            }
+        }
+
+        function getOrderStatusClass(status) {
+            switch(status) {
+                case 'قيد الانتظار': return 'status-warning';
+                case 'قيد الاستلام': return 'status-low';
+                case 'مكتمل': return 'status-ok';
+                default: return '';
+            }
+        }
+
+        // جعل الوظائف متاحة عالمياً
+        window.viewFileDetails = viewFileDetails;
+        window.deleteFile = deleteFile;
+        window.editInventoryItem = editInventoryItem;
+        window.deleteInventoryItem = deleteInventoryItem;
+        window.updateOrderArrival = updateOrderArrival;
+        window.deleteOrder = deleteOrder;
+        window.toggleColumnVisibility = toggleColumnVisibility;
+    </script>
+</body>
+</html>
